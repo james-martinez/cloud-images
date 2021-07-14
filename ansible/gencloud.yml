@@ -6,4 +6,5 @@
 
   roles:
     - gencloud_guest
+    - vmware-guestinfo
     - cleanup_vm
