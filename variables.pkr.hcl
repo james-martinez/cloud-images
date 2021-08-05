@@ -25,10 +25,23 @@ variables {
   aws_s3_bucket_name       = ""
   aws_role_name            = "vmimport"
   //
+  // DigitalOcean variables
+  //
+  do_api_token             = env("DIGITALOCEAN_API_TOKEN")
+  do_image_name            = "AlmaLinux-x86_64-latest-{{timestamp}}"
+  do_image_regions         = ["nyc3"]
+  do_region                = "nyc3"
+  do_size                  = "s-1vcpu-1gb"
+  do_snapshot_name         = "AlmaLinux-x86_64-latest-{{timestamp}}"
+  do_spaces_key            = env("DIGITALOCEAN_SPACES_ACCESS_KEY")
+  do_spaces_name           = env("DIGITALOCEAN_SPACES_NAME")
+  do_spaces_secret         = env("DIGITALOCEAN_SPACES_SECRET_KEY")
+  do_tags                  = ["AlmaLinux"]
+  //
   // Generic Cloud (OpenStack) variables
   //
   gencloud_boot_command    = [
-    "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/almalinux-8.gencloud.ks<enter><wait>"
+    "<tab> inst.text net.ifnames=0 inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/almalinux-8.gencloud.ks<enter><wait>"
   ]
   gencloud_disk_size       = "10G"
   gencloud_ssh_username    = "root"
@@ -41,10 +54,10 @@ variables {
   // Vagrant specific variables
   //
   vagrant_boot_command     = [
-    "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/almalinux-8.vagrant.ks<enter><wait>"
+    "<tab> inst.text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/almalinux-8.vagrant.ks<enter><wait>"
   ]
   vagrant_efi_boot_command = [
-    "e<down><down><end><bs><bs><bs><bs><bs>text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/almalinux-8.vagrant.ks<leftCtrlOn>x<leftCtrlOff>"
+    "e<down><down><end><bs><bs><bs><bs><bs>inst.text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/almalinux-8.vagrant.ks<leftCtrlOn>x<leftCtrlOff>"
   ]
   vagrant_disk_size        = 20000
   vagrant_shutdown_command = "echo vagrant | sudo -S /sbin/shutdown -hP now"

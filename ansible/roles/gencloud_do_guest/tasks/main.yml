@@ -46,12 +46,22 @@
     - NOZEROCONF=yes
 
 - name: Configure /etc/sysconfig/network-scripts/ifcfg-eth0
-  copy:
-    src: ifcfg-eth0
-    dest: /etc/sysconfig/network-scripts/ifcfg-eth0
+  lineinfile:
+    path: /etc/sysconfig/network-scripts/ifcfg-eth0
+    line: "{{ item }}"
+    create: true
     owner: root
     group: root
     mode: 0644
+  with_items:
+    - DEVICE="eth0"
+    - BOOTPROTO="dhcp"
+    - ONBOOT="yes"
+    - TYPE="Ethernet"
+    - USERCTL="yes"
+    - PEERDNS="yes"
+    - IPV6INIT="no"
+    - PERSISTENT_DHCLIENT="1"
 
 - name: Disable consistent network device naming
   file:
@@ -75,9 +85,6 @@
     - 'timeout 300;'
     - 'retry 60;'
 
-- name: Empty /etc/resolv.conf
-  command: truncate -s 0 /etc/resolv.conf
-
 - name: Set infra yum variable to 'genclo'
   replace:
     path: /etc/yum/vars/infra
@@ -96,7 +103,8 @@
     line: "almalinux\tALL=(ALL)\tNOPASSWD: ALL"
     state: present
 
-- name: Disable root login
-  user:
-    name: root
-    password: '!!'
+# TODO: uncomment this when issue with Ansible tmp files is fixed
+# - name: Disable root login
+#   user:
+#     name: root
+#     password: '!!'

@@ -105,6 +105,42 @@ $ packer build -var aws_s3_bucket_name="YOUR_S3_BUCKET_NAME" \
 ```
 
 
+### Build a DigitalOcean image
+
+You need to setup a key for packer to use. This is done by going to DigitalOcean's [cloud
+console](https://cloud.digitalocean.com/account/api/tokens).
+
+Make it available through an environment variable:
+
+```sh
+$ export DIGITALOCEAN_TOKEN="ENTER_YOUR_ACCESS_TOKEN_HERE"
+```
+
+A space needs to be created in order to import the image through it. Please, read the [relevant
+documentation](https://docs.digitalocean.com/products/spaces/how-to/create/). Take note of the access and secret keys in order to
+use them later on.
+
+There are a few environemnt variables you will need to make available.
+
+* The spaces bucket name through `DIGITALOCEAN_SPACES_NAME`.
+* The bucket's access key through `DIGITALOCEAN_SPACES_ACCESS_KEY`.
+* The bucket's secret key through `DIGITALOCEAN_SPACES_SECRET_KEY`.
+
+You can do this by exporting them as well:
+
+```sh
+$ export DIGITALOCEAN_SPACES_NAME='YOUR_SPACES_BUCKET_NAME'
+$ export DIGITALOCEAN_SPACES_ACCESS_KEY='YOUR_BUCKET_ACCESS_KEY'
+$ export DIGITALOCEAN_SPACES_SECRET_KEY='YOUR_BUCKET_SECRET_KEY'
+```
+
+Now, you're all setup. You can try building the image with:
+
+```sh
+$ packer build -only qemu.almalinux-8-gencloud-do-x86_64 .
+```
+
+
 ### Build a Generic Cloud (OpenStack compatible) image
 
 ```sh
