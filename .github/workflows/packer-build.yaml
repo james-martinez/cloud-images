@@ -41,4 +41,4 @@ jobs:
       - name: Build image
         run: |
           packer init .
-          packer build -only qemu.almalinux-8-gencloud-x86_64 .
+          packer build -only=qemu.almalinux-8-gencloud-x86_64 .
