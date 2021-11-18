@@ -13,8 +13,8 @@ packer {
 
 
 source "vmware-iso" "almalinux-8-aws-stage1" {
-  iso_url          = var.iso_url
-  iso_checksum     = var.iso_checksum
+  iso_url          = var.iso_url_x86_64
+  iso_checksum     = var.iso_checksum_x86_64
   boot_command     = var.aws_boot_command
   boot_wait        = var.boot_wait
   cpus             = var.cpus
@@ -41,8 +41,8 @@ source "vmware-iso" "almalinux-8-aws-stage1" {
 
 
 source "qemu" "almalinux-8-aws-stage1" {
-  iso_url            = var.iso_url
-  iso_checksum       = var.iso_checksum
+  iso_url            = var.iso_url_x86_64
+  iso_checksum       = var.iso_checksum_x86_64
   shutdown_command   = var.root_shutdown_command
   accelerator        = "kvm"
   http_directory     = var.http_directory
@@ -60,7 +60,8 @@ source "qemu" "almalinux-8-aws-stage1" {
   headless           = var.headless
   memory             = var.memory
   net_device         = "virtio-net"
-  vm_name            = "almalinux-8-AWS-8.4.x86_64.raw"
+  qemu_binary        = var.qemu_binary
+  vm_name            = "almalinux-8-AWS-8.5.x86_64.raw"
   boot_wait          = var.boot_wait
   boot_command       = var.aws_boot_command
 }
@@ -86,14 +87,14 @@ build {
 
   // comment this out if you don't want to import AMI to Amazon EC2 automatically
   post-processor "amazon-import" {
-    ami_name        = "${var.aws_ami_name}-stage1"
-    ami_description = var.aws_ami_description
+    ami_name        = "Alma 8.5 internal use only {{isotime \"20060102\"}} x86_64"
+    ami_description = var.aws_ami_description_x86_64
     ami_groups      = ["all"]
     s3_bucket_name  = var.aws_s3_bucket_name
     license_type    = "BYOL"
     role_name       = var.aws_role_name
     tags = {
-      Name = "${var.aws_ami_name}-stage1"
+      Name = "Alma 8.5 internal use only {{isotime \"20060102\"}} x86_64"
     }
     keep_input_artifact = true
     except = [
@@ -102,15 +103,15 @@ build {
   }
 
   post-processor "amazon-import" {
-    ami_name        = "${var.aws_ami_name}-stage1"
+    ami_name        = "Alma 8.5 internal use only {{isotime \"20060102\"}} x86_64"
     format          = "raw"
-    ami_description = var.aws_ami_description
+    ami_description = var.aws_ami_description_x86_64
     ami_groups      = ["all"]
     s3_bucket_name  = var.aws_s3_bucket_name
     license_type    = "BYOL"
     role_name       = var.aws_role_name
     tags = {
-      Name = "${var.aws_ami_name}-stage1"
+      Name = "Alma 8.5 internal use only {{isotime \"20060102\"}} x86_64"
     }
     keep_input_artifact = true
     only = [

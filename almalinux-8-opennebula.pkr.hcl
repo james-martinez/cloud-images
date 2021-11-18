@@ -1,8 +1,8 @@
 /*
- * AlmaLinux OS 8 Packer template for building Generic Cloud (OpenStack compatible) images.
+ * AlmaLinux OS 8 Packer template for building OpenNebula images.
  */
 
-source "qemu" "almalinux-8-gencloud-x86_64" {
+source "qemu" "almalinux-8-opennebula-x86_64" {
   iso_url            = var.iso_url_x86_64
   iso_checksum       = var.iso_checksum_x86_64
   shutdown_command   = var.root_shutdown_command
@@ -23,13 +23,13 @@ source "qemu" "almalinux-8-gencloud-x86_64" {
   memory             = var.memory
   net_device         = "virtio-net"
   qemu_binary        = var.qemu_binary
-  vm_name            = "almalinux-8-GenericCloud-8.5.x86_64.qcow2"
+  vm_name            = "almalinux-8-OpenNebula-8.5.x86_64.qcow2"
   boot_wait          = var.boot_wait
-  boot_command       = var.gencloud_boot_command_x86_64
+  boot_command       = var.opennebula_boot_command_x86_64
 }
 
 
-source "qemu" "almalinux-8-gencloud-aarch64" {
+source "qemu" "almalinux-8-opennebula-aarch64" {
   iso_url            = var.iso_url_aarch64
   iso_checksum       = var.iso_checksum_aarch64
   shutdown_command   = var.root_shutdown_command
@@ -52,9 +52,9 @@ source "qemu" "almalinux-8-gencloud-aarch64" {
   memory             = var.memory
   net_device         = "virtio-net"
   qemu_binary        = var.qemu_binary
-  vm_name            = "almalinux-8-GenericCloud-8.5.aarch64.qcow2"
+  vm_name            = "almalinux-8-OpenNebula-8.5.aarch64.qcow2"
   boot_wait          = var.boot_wait
-  boot_command       = var.gencloud_boot_command_aarch64
+  boot_command       = var.opennebula_boot_command_aarch64
   qemuargs = [
     ["-cpu", "max"],
     ["-boot", "strict=on"],
@@ -65,12 +65,12 @@ source "qemu" "almalinux-8-gencloud-aarch64" {
 
 build {
   sources = [
-    "qemu.almalinux-8-gencloud-x86_64",
-    "qemu.almalinux-8-gencloud-aarch64"
+    "qemu.almalinux-8-opennebula-x86_64",
+    "qemu.almalinux-8-opennebula-aarch64"
   ]
 
   provisioner "ansible" {
-    playbook_file    = "./ansible/gencloud.yml"
+    playbook_file    = "./ansible/opennebula.yml"
     galaxy_file      = "./ansible/requirements.yml"
     roles_path       = "./ansible/roles"
     collections_path = "./ansible/collections"

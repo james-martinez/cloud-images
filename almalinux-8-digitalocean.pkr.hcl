@@ -13,8 +13,8 @@ packer {
 
 
 source "qemu" "almalinux-8-digitalocean-x86_64" {
-  iso_url            = var.iso_url
-  iso_checksum       = var.iso_checksum
+  iso_url            = var.iso_url_x86_64
+  iso_checksum       = var.iso_checksum_x86_64
   shutdown_command   = var.root_shutdown_command
   accelerator        = "kvm"
   http_directory     = var.http_directory
@@ -32,7 +32,8 @@ source "qemu" "almalinux-8-digitalocean-x86_64" {
   headless           = var.headless
   memory             = var.memory
   net_device         = "virtio-net"
-  vm_name            = "almalinux-8-DigitalOcean-8.4.x86_64.qcow2"
+  qemu_binary        = var.qemu_binary
+  vm_name            = "almalinux-8-DigitalOcean-8.5.x86_64.qcow2"
   boot_wait          = var.boot_wait
   boot_command       = var.gencloud_boot_command
   qemu_img_args {

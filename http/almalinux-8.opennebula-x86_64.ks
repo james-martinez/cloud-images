@@ -1,6 +1,5 @@
-# AlmaLinux 8 kickstart file for AWS EC2
+# AlmaLinux 8 kickstart file for Generic Cloud (OpenStack) image
 
-install
 url --url https://repo.almalinux.org/almalinux/8/BaseOS/x86_64/kickstart/
 repo --name=BaseOS --baseurl=https://repo.almalinux.org/almalinux/8/BaseOS/x86_64/os/
 repo --name=AppStream --baseurl=https://repo.almalinux.org/almalinux/8/AppStream/x86_64/os/
@@ -15,14 +14,16 @@ keyboard us
 timezone UTC --isUtc
 
 network --bootproto=dhcp
-firewall --disabled
+firewall --enabled --service=ssh
 services --disabled="kdump" --enabled="chronyd,rsyslog,sshd"
 selinux --enforcing
 
-bootloader --append="console=ttyS0,115200n8 console=tty0 crashkernel=auto net.ifnames=0 no_timer_check nvme_core.io_timeout=4294967295 nvme_core.max_retries=10" --location=mbr --timeout=1
+# TODO: remove "console=tty0" from here
+bootloader --append="console=ttyS0,115200n8 console=tty0 crashkernel=auto net.ifnames=0 no_timer_check" --location=mbr --timeout=1
 zerombr
-clearpart --all --initlabel --disklabel=gpt
-autopart --type=plain --noboot --nohome --noswap --fstype=xfs
+clearpart --all --initlabel
+reqpart
+part / --fstype="xfs" --size=8000
 
 rootpw --plaintext almalinux
 
@@ -47,7 +48,4 @@ reboot --eject
 
 
 %post
-# allow ec2-user to run everything without a password
-echo -e 'ec2-user\tALL=(ALL)\tNOPASSWD: ALL' >> /etc/sudoers
-
 %end

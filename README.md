@@ -12,11 +12,12 @@ AlmaLinux OS images for various cloud platforms.
 | AWS Marketplace AMI        | https://aws.amazon.com/marketplace/pp/B094C8ZZ8J                    |
 | AWS community AMIs         | https://wiki.almalinux.org/cloud/AWS.html                           |
 | Docker Hub                 | https://hub.docker.com/_/almalinux                                  |
-| Generic Cloud (cloud-init) | https://repo.almalinux.org/almalinux/8/cloud/x86_64/images/         |
+| Generic Cloud (cloud-init) | https://wiki.almalinux.org/cloud/Generic-cloud.html                 |
 | Google Cloud               | https://cloud.google.com/compute/docs/images#almalinux              |
 | LXC/LXD                    | https://images.linuxcontainers.org                                  |
 | Quay.io                    | https://quay.io/repository/almalinux/almalinux                      |
 | Vagrant boxes              | [app.vagrantup.com/almalinux](https://app.vagrantup.com/almalinux/) |
+| OpenNebula                 | https://wiki.almalinux.org/cloud/OpenNebula.html                    |
 
 
 ## Roadmap
@@ -27,12 +28,13 @@ AlmaLinux OS images for various cloud platforms.
 * [ ] Vagrant + Parallels support (#3)
 * [x] Vagrant + Microsoft Hyper-V support (#4)
 * [x] Vagrant + Libvirt support
-* [x] AWS support (using the VMWare builder only, it would be nice to support VirtualBox or Qemu as well)
+* [x] AWS AMI `x86_64` and `aarch64` support
 * [x] Google Cloud support
 * [ ] Microsoft Azure support (#14)
 * [x] DigitalOcean support
-* [x] Generic Cloud / OpenStack support (#12)
+* [x] Generic Cloud / OpenStack `x86_64` and `aarch64` support (#12)
 * [x] LXC/LXD support (#8)
+* [x] OpenNebula `x86_64` and `aarch64` support
 
 
 ## Usage
@@ -72,6 +74,8 @@ Build a Hyper-V box:
 
 
 ### Build an Amazon AMI
+
+`x86_64`
 
 Before building AMI's you need to configure AWS credentials as described in
 the Packer [documentation](https://www.packer.io/docs/builders/amazon#environment-variables).
@@ -154,7 +158,7 @@ export AWS_DEFAULT_REGION='us-east-1'
 
 Install required Packer plugins:
 ```sh
-packer init .
+packer.io init .
 ```
 
 Start the Build:
@@ -162,6 +166,26 @@ Start the Build:
 packer.io build -only=amazon-chroot.almalinux-8-aws-stage2 .
 ```
 You can remove the first stage's AMI after the build complete
+
+`aarch64`
+
+Confugire the AWS credentials:
+
+```sh
+export AWS_ACCESS_KEY_ID='ENTER_YOUR_ACCESS_KEY_HERE'
+export AWS_SECRET_ACCESS_KEY='ENTER_YOUR_SECRET_KEY_HERE'
+export AWS_DEFAULT_REGION='us-east-1'
+```
+
+Install required Packer plugins:
+```sh
+packer init .
+```
+
+Start the Build:
+```sh
+packer build -only=amazon-ebssurrogate.almalinux-8-aws-aarch64 .
+```
 
 
 ### Build a DigitalOcean image
@@ -198,12 +222,34 @@ Now, you're all setup. You can try building the image with:
 ```sh
 $ packer build -only qemu.almalinux-8-digitalocean-x86_64 .
 ```
+### Import the image to DigitalOcean
 
+You can upload your image or Import it via URL from the [GitHub release](https://github.com/AlmaLinux/cloud-images/releases) section.
+
+In [Images >> Custom Images](https://cloud.digitalocean.com/images/custom_images) section, click on `Import via URL` and enter the URL of image file :  https://github.com/AlmaLinux/cloud-images/releases/download/digitalocean-20210810/almalinux-8-DigitalOcean-8.4.20210810.x86_64.qcow2
 
 ### Build a Generic Cloud (OpenStack compatible) image
 
+`x86_64`
 ```sh
-$ packer build -only qemu.almalinux-8-gencloud-x86_64 .
+$ packer build -only=qemu.almalinux-8-gencloud-x86_64 .
+```
+
+`aarch64`
+```sh
+$ packer build -only=qemu.almalinux-8-gencloud-aarch64 .
+```
+
+### Build a OpenNebula image
+
+`x86_64`
+```sh
+$ packer build -only=qemu.almalinux-8-opennebula-x86_64 .
+```
+
+`aarch64`
+```sh
+$ packer build -only=qemu.almalinux-8-opennebula-aarch64 .
 ```
 
 
@@ -213,7 +259,7 @@ $ packer build -only qemu.almalinux-8-gencloud-x86_64 .
 * [Ansible](https://www.ansible.com/)
 * [VirtualBox](https://www.virtualbox.org/) (for VirtualBox images only)
 * [VMWare Workstation](https://www.vmware.com/products/workstation-pro.html) (for VMWare images and Amazon AMI's only)
-* [QEMU](https://www.qemu.org/) (for Generic Cloud and Libvirt images only)
+* [QEMU](https://www.qemu.org/) (for Generic Cloud, Vagrant Libvirt, AWS AMI, OpenNebula and DigitalOcean images only)
 
 
 ## References
@@ -238,16 +284,12 @@ ln -s /usr/bin/packer /usr/bin/packer.io
 
 **Issue:** `Failed creating Qemu driver: exec: "qemu-system-x86_64": executable file not found in $PATH`
 
-**Solution:** If you run packer from an EL distribution, You need to add the `qemu_binary` parameter on the QEMU builder :
+**Solution:** By default, Packer looks for QEMU binary as `qemu-system-x86_64`. If it is different in your system, You can set your qemu binary with the `qemu_binary` variable. i.e. on EL, it's `qemu-kvm`. :
 
 example:
 
 ```sh
-..
-  format             = "raw"
-  qemu_binary        = "/usr/libexec/qemu-kvm" 
-  headless           = var.headless
-..
+$ packer build -var qemu_binary="/usr/libexec/qemu-kvm" -only=qemu.almalinux-8-gencloud-x86_64 .
 ```
 ## License
 
