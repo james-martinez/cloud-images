@@ -11,6 +11,7 @@ AlmaLinux OS images for various cloud platforms.
 | -------------------------- | ------------------------------------------------------------------- |
 | AWS Marketplace AMI        | https://aws.amazon.com/marketplace/pp/B094C8ZZ8J                    |
 | AWS community AMIs         | https://wiki.almalinux.org/cloud/AWS.html                           |
+| Azure Marketplace          | https://azuremarketplace.microsoft.com/en-us/marketplace/apps/almalinux.almalinux |
 | Docker Hub                 | https://hub.docker.com/_/almalinux                                  |
 | Generic Cloud (cloud-init) | https://wiki.almalinux.org/cloud/Generic-cloud.html                 |
 | Google Cloud               | https://cloud.google.com/compute/docs/images#almalinux              |
@@ -30,7 +31,7 @@ AlmaLinux OS images for various cloud platforms.
 * [x] Vagrant + Libvirt support
 * [x] AWS AMI `x86_64` and `aarch64` support
 * [x] Google Cloud support
-* [ ] Microsoft Azure support (#14)
+* [x] Microsoft Azure support (#14)
 * [x] DigitalOcean support
 * [x] Generic Cloud / OpenStack `x86_64` and `aarch64` support (#12)
 * [x] LXC/LXD support (#8)
@@ -58,6 +59,12 @@ Build a VMWare box:
 
 ```sh
 $ packer build -only=vmware-iso.almalinux-8 .
+```
+
+Build a Parallels box:
+
+```sh
+$ packer build -only=parallels-iso.almalinux-8 .
 ```
 
 Build a Libvirt box:
@@ -258,6 +265,7 @@ $ packer build -only=qemu.almalinux-8-opennebula-aarch64 .
 * [Packer](https://www.packer.io/)
 * [Ansible](https://www.ansible.com/)
 * [VirtualBox](https://www.virtualbox.org/) (for VirtualBox images only)
+* [Parallels](https://www.parallels.com/) (for Parallels images only)
 * [VMWare Workstation](https://www.vmware.com/products/workstation-pro.html) (for VMWare images and Amazon AMI's only)
 * [QEMU](https://www.qemu.org/) (for Generic Cloud, Vagrant Libvirt, AWS AMI, OpenNebula and DigitalOcean images only)
 
