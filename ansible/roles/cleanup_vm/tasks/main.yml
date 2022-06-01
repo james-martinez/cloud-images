@@ -47,6 +47,7 @@
   command: "truncate -s 0 {{ item }}"
   loop:
     - /etc/machine-id
+    - /etc/resolv.conf
     - /var/log/audit/audit.log
     - /var/log/wtmp
     - /var/log/lastlog
@@ -80,6 +81,17 @@
     path: "{{ item.path }}"
     state: absent
   loop: "{{ log_files.files }}"
+
+- name: Remove random-seed
+  file:
+    path: /var/lib/systemd/random-seed
+    state: absent
+
+- name: Disable root SSH login via password
+  file:
+    path: /etc/ssh/sshd_config.d/01-permitrootlogin.conf
+    state: absent
+  when: ansible_facts['distribution_major_version'] == '9'
 
 - name: Fill free space with zeroes
   shell: dd if=/dev/zero of=/zeroed_file bs=1M oflag=direct || rm -f /zeroed_file

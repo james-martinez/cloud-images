@@ -2,19 +2,9 @@
  * AlmaLinux OS 8 Packer template for building DigitalOcean images.
  */
 
-packer {
-  required_plugins {
-    digitalocean = {
-      version = ">= 1.0.0"
-      source  = "github.com/hashicorp/digitalocean"
-    }
-  }
-}
-
-
 source "qemu" "almalinux-8-digitalocean-x86_64" {
-  iso_url            = var.iso_url_x86_64
-  iso_checksum       = var.iso_checksum_x86_64
+  iso_url            = var.iso_url_8_x86_64
+  iso_checksum       = var.iso_checksum_8_x86_64
   shutdown_command   = var.root_shutdown_command
   accelerator        = "kvm"
   http_directory     = var.http_directory
@@ -33,9 +23,9 @@ source "qemu" "almalinux-8-digitalocean-x86_64" {
   memory             = var.memory
   net_device         = "virtio-net"
   qemu_binary        = var.qemu_binary
-  vm_name            = "almalinux-8-DigitalOcean-8.5.x86_64.qcow2"
+  vm_name            = "almalinux-8-DigitalOcean-8.6.x86_64.qcow2"
   boot_wait          = var.boot_wait
-  boot_command       = var.gencloud_boot_command_x86_64
+  boot_command       = var.gencloud_boot_command_8_x86_64
 }
 
 

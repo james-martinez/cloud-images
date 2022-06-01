@@ -1,11 +1,11 @@
 /*
- * AlmaLinux OS 8 Packer template for building Vagrant boxes.
+ * AlmaLinux OS 9 Packer template for building Vagrant boxes.
  */
 
-source "hyperv-iso" "almalinux-8" {
-  iso_url               = var.iso_url_8_x86_64
-  iso_checksum          = var.iso_checksum_8_x86_64
-  boot_command          = var.vagrant_efi_boot_command_8_x86_64
+source "hyperv-iso" "almalinux-9" {
+  iso_url               = var.iso_url_9_x86_64
+  iso_checksum          = var.iso_checksum_9_x86_64
+  boot_command          = var.vagrant_efi_boot_command_9_x86_64
   boot_wait             = var.boot_wait
   generation            = 2
   switch_name           = var.hyperv_switch_name
@@ -24,15 +24,15 @@ source "hyperv-iso" "almalinux-8" {
 }
 
 
-source "parallels-iso" "almalinux-8" {
-  boot_command           = var.vagrant_boot_command_8_x86_64
+source "parallels-iso" "almalinux-9" {
+  boot_command           = var.vagrant_boot_command_9_x86_64
   boot_wait              = var.boot_wait
   cpus                   = var.cpus
   disk_size              = var.vagrant_disk_size
   guest_os_type          = "centos"
   http_directory         = var.http_directory
-  iso_checksum           = var.iso_checksum_8_x86_64
-  iso_url                = var.iso_url_8_x86_64
+  iso_checksum           = var.iso_checksum_9_x86_64
+  iso_url                = var.iso_url_9_x86_64
   memory                 = var.memory
   parallels_tools_flavor = var.parallels_tools_flavor_x86_64
   shutdown_command       = var.vagrant_shutdown_command
@@ -42,10 +42,10 @@ source "parallels-iso" "almalinux-8" {
 }
 
 
-source "virtualbox-iso" "almalinux-8" {
-  iso_url              = var.iso_url_8_x86_64
-  iso_checksum         = var.iso_checksum_8_x86_64
-  boot_command         = var.vagrant_boot_command_8_x86_64
+source "virtualbox-iso" "almalinux-9" {
+  iso_url              = var.iso_url_9_x86_64
+  iso_checksum         = var.iso_checksum_9_x86_64
+  boot_command         = var.vagrant_boot_command_9_x86_64
   boot_wait            = var.boot_wait
   cpus                 = var.cpus
   memory               = var.memory
@@ -65,10 +65,10 @@ source "virtualbox-iso" "almalinux-8" {
 }
 
 
-source "vmware-iso" "almalinux-8" {
-  iso_url          = var.iso_url_8_x86_64
-  iso_checksum     = var.iso_checksum_8_x86_64
-  boot_command     = var.vagrant_boot_command_8_x86_64
+source "vmware-iso" "almalinux-9" {
+  iso_url          = var.iso_url_9_x86_64
+  iso_checksum     = var.iso_checksum_9_x86_64
+  boot_command     = var.vagrant_boot_command_9_x86_64
   boot_wait        = var.boot_wait
   cpus             = var.cpus
   memory           = var.memory
@@ -92,9 +92,9 @@ source "vmware-iso" "almalinux-8" {
 }
 
 
-source "qemu" "almalinux-8" {
-  iso_checksum       = var.iso_checksum_8_x86_64
-  iso_url            = var.iso_url_8_x86_64
+source "qemu" "almalinux-9" {
+  iso_checksum       = var.iso_checksum_9_x86_64
+  iso_url            = var.iso_url_9_x86_64
   shutdown_command   = var.vagrant_shutdown_command
   accelerator        = "kvm"
   http_directory     = var.http_directory
@@ -110,22 +110,26 @@ source "qemu" "almalinux-8" {
   disk_compression   = true
   format             = "qcow2"
   headless           = var.headless
+  machine_type       = "q35"
   memory             = var.memory
   net_device         = "virtio-net"
   qemu_binary        = var.qemu_binary
-  vm_name            = "almalinux-8"
+  vm_name            = "almalinux-9"
   boot_wait          = var.boot_wait
-  boot_command       = var.vagrant_boot_command_8_x86_64
+  boot_command       = var.vagrant_boot_command_9_x86_64
+  qemuargs = [
+    ["-cpu", "host"]
+  ]
 }
 
 
 build {
   sources = [
-    "sources.hyperv-iso.almalinux-8",
-    "sources.parallels-iso.almalinux-8",
-    "sources.virtualbox-iso.almalinux-8",
-    "sources.vmware-iso.almalinux-8",
-    "sources.qemu.almalinux-8"
+    "sources.hyperv-iso.almalinux-9",
+    "sources.parallels-iso.almalinux-9",
+    "sources.virtualbox-iso.almalinux-9",
+    "sources.vmware-iso.almalinux-9",
+    "sources.qemu.almalinux-9"
   ]
 
   provisioner "ansible" {
@@ -143,7 +147,7 @@ build {
       "packer_provider=${source.type}"
     ]
     except = [
-      "hyperv-iso.almalinux-8"
+      "hyperv-iso.almalinux-9"
     ]
   }
 
@@ -164,7 +168,7 @@ build {
       "packer_provider=${source.type} ansible_ssh_pass=vagrant"
     ]
     only = [
-      "hyperv-iso.almalinux-8"
+      "hyperv-iso.almalinux-9"
     ]
   }
 
@@ -174,7 +178,7 @@ build {
       "sudo rm -fr /etc/ssh/*host*key*"
     ]
     only = [
-      "hyperv-iso.almalinux-8"
+      "hyperv-iso.almalinux-9"
     ]
   }
 
@@ -182,18 +186,18 @@ build {
 
     post-processor "vagrant" {
       compression_level = "9"
-      output            = "almalinux-8-x86_64.{{isotime \"20060102\"}}.{{.Provider}}.box"
+      output            = "almalinux-9-x86_64.${formatdate("YYYYMMDD", timestamp())}.{{.Provider}}.box"
       except = [
-        "qemu.almalinux-8"
+        "qemu.almalinux-9"
       ]
     }
 
     post-processor "vagrant" {
       compression_level    = "9"
       vagrantfile_template = "tpl/vagrant/vagrantfile-libvirt.tpl"
-      output               = "almalinux-8-x86_64.{{isotime \"20060102\"}}.{{.Provider}}.box"
+      output               = "almalinux-9-x86_64.${formatdate("YYYYMMDD", timestamp())}.{{.Provider}}.box"
       only = [
-        "qemu.almalinux-8"
+        "qemu.almalinux-9"
       ]
     }
   }
