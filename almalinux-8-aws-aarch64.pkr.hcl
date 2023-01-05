@@ -6,15 +6,15 @@ source "amazon-ebssurrogate" "almalinux-8-aws-aarch64" {
   region                  = "us-east-1"
   ssh_username            = "ec2-user"
   instance_type           = "t4g.micro"
-  source_ami              = "ami-070a38d61ee1ea697"
-  ami_name                = var.aws_ami_name_aarch64
-  ami_description         = var.aws_ami_description_aarch64
+  source_ami              = "ami-02c9a8bba92028114"
+  ami_name                = var.aws_ami_name_aarch64_8
+  ami_description         = var.aws_ami_description_aarch64_8
   ami_architecture        = "arm64"
   ami_virtualization_type = "hvm"
   ami_regions             = ["us-east-1"]
   tags = {
-    Name         = "${var.aws_ami_name_aarch64}",
-    Version      = "${var.aws_ami_version}",
+    Name         = "${var.aws_ami_name_aarch64_8}",
+    Version      = "${var.aws_ami_version_8}",
     Architecture = "aarch64"
   }
   ena_support   = true
@@ -42,13 +42,12 @@ build {
     "sources.amazon-ebssurrogate.almalinux-8-aws-aarch64"
   ]
   provisioner "shell" {
-    inline = ["sudo dnf -y install python39 python39-pip python39-{wheel,setuptools} && sudo python3 -m pip install ansible"]
+    inline = ["sudo dnf -y install ansible-core"]
   }
   provisioner "ansible-local" {
-    playbook_dir   = "./ansible"
-    playbook_file  = "./ansible/aws-ami-aarch64.yml"
-    galaxy_file    = "./ansible/requirements.yml"
-    galaxy_command = "ansible-galaxy collection install -r"
+    playbook_dir  = "./ansible"
+    playbook_file = "./ansible/aws-ami-aarch64.yml"
+    galaxy_file   = "./ansible/requirements.yml"
   }
 
 }
